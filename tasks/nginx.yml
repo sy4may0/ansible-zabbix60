@@ -1,0 +1,12 @@
+---
+# tasks file for nginx
+- name: Install the latest version of nginx
+  ansible.builtin.dnf:
+    name: nginx
+    state: latest
+
+- name: Enable service nginx and make sure a nginx is running.
+  ansible.builtin.systemd:
+    name: nginx
+    state: started
+    enabled: yes
