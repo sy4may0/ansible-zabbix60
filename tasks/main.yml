@@ -1,0 +1,17 @@
+---
+# tasks file for zabbix60
+- name: Import mariadb install tasks.
+  ansible.builtin.import_tasks:
+    file: mariadb.yml
+
+- name: Import nginx install tasks.
+  ansible.builtin.import_tasks:
+    file: nginx.yml
+
+- name: Import zabbix install tasks.
+  ansible.builtin.import_tasks:
+    file: zabbix.yml
+
+- name: Import snmptrapd install tasks.
+  ansible.builtin.import_tasks:
+    file: snmptrapd.yml

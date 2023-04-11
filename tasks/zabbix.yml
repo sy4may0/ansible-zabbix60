@@ -1,0 +1,128 @@
+---
+# tasks file for zabbix60
+- name: Install zabbix official repository
+  ansible.builtin.dnf:
+    name: "{{ zabbix_repos_rpm_url }}"
+    state: present
+    disable_gpg_check: yes
+
+- name: Install the latest version of zabbix services.
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - zabbix-server-mysql
+    - zabbix-web-mysql
+    - zabbix-nginx-conf
+    - zabbix-sql-scripts
+    - zabbix-selinux-policy
+    - zabbix-agent
+  notify: Restart services zabbix.
+
+- name: Create mysql database.
+  community.mysql.mysql_db:
+    name: "{{ zabbix_db_name }}"
+    state: present
+    encoding: "{{ zabbix_db_character_set }}"
+    collation: "{{ zabbix_db_collation }}"
+    login_unix_socket: "{{ zabbix_mysql_socket }}"
+    login_user: root
+    login_password: "{{ zabbix_db_root_password }}"
+  check_mode: no
+  notify: Restart services zabbix.
+
+- name: Create mysql user.
+  community.mysql.mysql_user:
+    name: "{{ zabbix_db_user }}"
+    password: "{{ zabbix_db_password }}"
+    priv: "{{ zabbix_db_privilege }}"
+    login_unix_socket: "{{ zabbix_mysql_socket }}"
+    login_user: root
+    login_password: "{{ zabbix_db_root_password }}"
+  check_mode: no
+  notify: Restart services zabbix.
+
+- name: Check if the zabbix tables are created.
+  ansible.builtin.shell: >
+    mysql -u'{{ zabbix_db_user }}'
+    -p'{{ zabbix_db_password }}'
+    {{ zabbix_db_name }}
+    -Ns -e 'show tables;'
+  changed_when: no
+  register: zabbix_db_table_check
+  check_mode: no
+
+- name: Deploy the shell-script that creating zabbix tables.
+  ansible.builtin.template:
+    src: zabbix_table_create.sh.j2
+    dest: /tmp/zabbix_table_create.sh
+    owner: root
+    group: root
+    mode: '0744'
+    backup: yes
+  when: zabbix_db_table_check.stdout_lines|length == 0
+  register: zabbix_table_script
+  check_mode: no
+
+- name: Create the zabbix tables.
+  ansible.builtin.shell: /tmp/zabbix_table_create.sh
+  when: zabbix_table_script.changed
+  check_mode: no
+  notify: Restart services zabbix.
+
+- name: Remove the shell-script.
+  ansible.builtin.file:
+    path: /tmp/zabbix_table_create.sh
+    state: absent
+
+- name: Create the zabbix configuration directory.
+  ansible.builtin.file:
+    path: "{{ zabbix_conf_directory }}"
+    owner: root
+    group: zabbix
+    mode: '0755'
+    state: directory
+  notify: Restart services zabbix.
+
+- name: Template zabbix configuration files.
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: zabbix
+    mode: '0640'
+  loop:
+    - src: zabbix_server.conf.j2
+      dest: /etc/zabbix/zabbix_server.conf
+    - src: zabbix_db.conf.j2
+      dest: "{{ zabbix_conf_directory }}/zabbix_db.conf"
+    - src: zabbix_snmp.conf.j2
+      dest: "{{ zabbix_conf_directory }}/zabbix_snmp.conf"
+    - src: nginx_zabbix.conf.j2
+      dest: "/etc/nginx/conf.d/zabbix.conf"
+  notify: Restart services zabbix.
+
+- name: Template zabbix web configuration files.
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: apache
+    group: apache
+    mode: '0600'
+    backup: yes
+  loop:
+    - src: zabbix.conf.php.j2
+      dest: "/etc/zabbix/web/zabbix.conf.php"
+  notify: Restart services zabbix.
+
+- name: Enable zabbix services and make sure there are running.
+  ansible.builtin.systemd:
+    name: "{{ item }}"  
+    state: started
+    enabled: yes
+  loop:
+    - zabbix-server
+    - zabbix-agent
+    - nginx
+    - php-fpm
+    

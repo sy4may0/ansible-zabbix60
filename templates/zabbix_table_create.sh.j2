@@ -1,0 +1,4 @@
+#!/bin/bash
+mysql -uroot -p{{ zabbix_db_root_password }} -e 'set global log_bin_trust_function_creators = 1;'
+zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set={{ zabbix_db_character_set }} -u{{ zabbix_db_user }} -p{{ zabbix_db_password }} {{ zabbix_db_name }}
+mysql -uroot -p{{ zabbix_db_root_password }} -e 'set global log_bin_trust_function_creators = 0;'

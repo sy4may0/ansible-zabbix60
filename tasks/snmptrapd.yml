@@ -1,0 +1,53 @@
+---
+# tasks file for zabbix snmptrapd.
+- name: Install the latest version of net-snmp
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - net-snmp
+    - net-snmp-utils
+    - net-snmp-perl
+
+- name: Deploy Zabbix snmp trap receiver.
+  ansible.builtin.template:
+    src: zabbix_trap_receiver.pl.j2
+    dest: /usr/local/bin/zabbix_trap_receiver.pl
+    owner: root
+    group: root
+    mode: '0744'
+    backup: yes
+  
+- name: Create snmptrap log directory
+  ansible.builtin.file:
+    path: "{{ zabbix_snmp_trapperfile | dirname }}"
+    owner: root
+    group: zabbix
+    mode: '0755'
+    state: directory
+    recurse: yes
+
+- name: Template snmptrapd configuration files.
+  ansible.builtin.template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: '0600'
+    backup: yes
+  loop:
+    - src: snmptrapd.conf.j2
+      dest: /etc/snmp/snmptrapd.conf
+    - src: snmptrap_logrotate.j2
+      dest: /etc/logrotate.d/snmptrap
+  notify: Restart service snmptrapd.
+
+- name: Enable snmptrapd and make sure it is running.
+  ansible.builtin.systemd:
+    name: "{{ item }}"  
+    state: started
+    enabled: yes
+  loop:
+    - snmptrapd
+ 
+

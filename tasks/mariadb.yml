@@ -1,0 +1,45 @@
+---
+# tasks file for mariadb
+- name: Add mariadb official repository.
+  ansible.builtin.yum_repository:
+    name: mariadb
+    description: MariaDB official repository
+    baseurl: "{{ zabbix_mariadb_repos_baseurl }}"
+    gpgcheck: yes
+    gpgkey: "{{ zabbix_mariadb_repos_gpgkey }}"
+    module_hotfixes: yes
+
+- name: Install the latest version of MariaDB.
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - MariaDB-server
+    - python2-PyMySQL
+    - python3-PyMySQL
+  notify: Restart service mariadb.
+
+- name: Enable service mariadb and make sure a mariadb is running.
+  ansible.builtin.systemd:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Check if a root password is unset.
+  shell: >
+    mysql -uroot
+    -p'{{ zabbix_db_root_password }}'
+    -e quit
+  changed_when: no
+  ignore_errors: true
+  register: zabbix_db_root_pwd_check
+
+- name: Change mariadb root password.
+  community.mysql.mysql_user:
+    name: root
+    password: "{{ zabbix_db_root_password }}"
+    login_unix_socket: "{{ zabbix_mysql_socket }}"
+    login_user: root
+    login_password: ""
+  when: zabbix_db_root_pwd_check.rc != 0
+  notify: Restart service mariadb.

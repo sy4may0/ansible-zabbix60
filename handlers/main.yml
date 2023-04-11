@@ -1,0 +1,22 @@
+---
+# handlers file for zabbix60
+- name: Restart service mariadb.
+  ansible.builtin.systemd:
+    name: mariadb
+    state: restarted
+
+- name: Restart services zabbix.
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: restarted
+  loop:
+    - zabbix-server
+    - zabbix-agent
+    - nginx
+    - php-fpm
+
+- name: Restart service snmptrapd.
+  ansible.builtin.systemd:
+    name: snmptrapd
+    state: restarted
+
