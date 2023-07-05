@@ -17,11 +17,34 @@ zabbix_db_privilege: "{{ zabbix_db_name }}.*:ALL"
 zabbix_db_root_password: root00
 zabbix_mysql_socket: /var/lib/mysql/mysql.sock
 
+# mysql tuning settings.
+zabbix_mysql_buffer_pool_size: 128M 
+zabbix_mysql_log_file_size: 48M
+zabbix_mysql_io_capacity: 200 
+zabbix_mysql_io_capacity_max: 4000
+zabbix_mysql_thread_cache_size: 10
+zabbix_mysql_flush_log_at_trx_commit: 2
+zabbix_mysql_doublewrite: 0
+zabbix_mysql_max_connections: 100
+
 # zabbix server settings.
 zabbix_conf_directory: /etc/zabbix/zabbix_server.conf.d
 zabbix_snmp_trapperfile: /var/log/snmptrap/snmptrap.log
 zabbix_snmp_timeout: 4
 zabbix_start_snmptrapper: 1
+
+# zabbix server tuning settings.
+zabbix_start_pollers: 5
+zabbix_start_pollers_unreachable: 1
+zabbix_start_trappers: 5
+zabbix_start_discoverers: 1
+zabbix_start_http_pollers: 1
+zabbix_start_vmware_collectors: 0
+zabbix_vmware_timeout: 10
+zabbix_history_cache_size: 48M
+zabbix_value_cache_size: 24M
+zabbix_config_cache_size: 8M
+zabbix_allow_root: 0
 
 # zabbix nginx settings.
 zabbix_nginx_listen: 8080

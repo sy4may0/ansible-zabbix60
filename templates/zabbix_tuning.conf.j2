@@ -1,0 +1,21 @@
+# ansible-zabbix60
+# 
+# Author y.iwata
+# Date: 2023-06-30
+#
+# ! DO NOT CHANGE THIS FILE.
+# ! This configuration file is managed by Ansible.
+
+StartPollers={{ zabbix_start_pollers }}
+StartPollersUnreachable={{ zabbix_start_pollers_unreachable }}
+StartTrappers={{ zabbix_start_trappers }}
+StartDiscoverers={{ zabbix_start_discoverers }}
+StartHTTPPollers={{ zabbix_start_http_pollers }}
+
+StartVMwareCollectors={{ zabbix_start_vmware_collectors }}
+VMwareTimeout={{ zabbix_vmware_timeout }}
+
+HistoryCacheSize={{ zabbix_history_cache_size }}
+ValueCacheSize={{ zabbix_value_cache_size }}
+CacheSize={{ zabbix_config_cache_size }}
+

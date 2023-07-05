@@ -1,0 +1,17 @@
+# ansible-zabbix60
+# 
+# Author y.iwata
+# Date: 2023-06-30
+#
+# ! DO NOT CHANGE THIS FILE.
+# ! This configuration file is managed by Ansible.
+
+[mysqld]
+innodb_buffer_pool_size = {{ zabbix_mysql_buffer_pool_size }}
+innodb_log_file_size = {{ zabbix_mysql_log_file_size }}
+innodb_io_capacity = {{ zabbix_mysql_io_capacity }}
+innodb_io_capacity_max = {{ zabbix_mysql_io_capacity_max }}
+thread_cache_size = {{ zabbix_mysql_thread_cache_size }}
+innodb_flush_log_at_trx_commit = {{ zabbix_mysql_flush_log_at_trx_commit }}
+innodb_doublewrite = {{ zabbix_mysql_doublewrite }}
+max_connections = {{ zabbix_mysql_max_connections }}

@@ -1,2 +1,10 @@
+# ansible-zabbix60
+# 
+# Author y.iwata
+# Date: 2023-06-30
+#
+# ! DO NOT CHANGE THIS FILE.
+# ! This configuration file is managed by Ansible.
+
 authCommunity   log,execute,net {{ zabbix_snmp_community }}
 perl do "/usr/local/bin/zabbix_trap_receiver.pl";

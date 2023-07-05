@@ -98,6 +98,8 @@
       dest: "{{ zabbix_conf_directory }}/zabbix_db.conf"
     - src: zabbix_snmp.conf.j2
       dest: "{{ zabbix_conf_directory }}/zabbix_snmp.conf"
+    - src: zabbix_tuning.conf.j2
+      dest: "{{ zabbix_conf_directory }}/zabbix_tuning.conf"
     - src: nginx_zabbix.conf.j2
       dest: "/etc/nginx/conf.d/zabbix.conf"
   notify: Restart services zabbix.
