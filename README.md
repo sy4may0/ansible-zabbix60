@@ -12,8 +12,7 @@ Role Variables
 
 変数のデフォルト値は`defaults/main.yml`を確認してください。必要に応じて、パラメーターをデフォルト値から変更する場合、`group_vars`等、他の変数定義ファイルを作成し値を上書きしてください。
 
-以下に変数の詳細な説明を記載します。
-[Variables](documents/Variables.md)
+変数の詳細な説明は[Variables](documents/Variables.md)を確認してください。
 
 Dependencies
 ------------
