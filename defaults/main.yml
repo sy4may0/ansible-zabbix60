@@ -53,5 +53,12 @@ zabbix_nginx_server_name: '_'
 # zabbix web settings.
 zabbix_web_server_name: 'ange'
 
+# zabbix is server.
+zabbix_is_server: false
+
+# zabbix config
+zabbix_server_address: 192.168.0.1
+zabbix_hostname: example
+
 # snmp settings.
 zabbix_snmp_community: public

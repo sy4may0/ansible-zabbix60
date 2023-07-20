@@ -20,3 +20,7 @@
     name: snmptrapd
     state: restarted
 
+- name: Restart service zabbix-agent.
+  ansible.builtin.systemd:
+    name: zabbix-agent
+    state: restarted

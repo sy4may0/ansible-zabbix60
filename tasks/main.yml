@@ -3,15 +3,24 @@
 - name: Import mariadb install tasks.
   ansible.builtin.import_tasks:
     file: mariadb.yml
+  when: zabbix_is_server
 
 - name: Import nginx install tasks.
   ansible.builtin.import_tasks:
     file: nginx.yml
+  when: zabbix_is_server
 
 - name: Import zabbix install tasks.
   ansible.builtin.import_tasks:
     file: zabbix.yml
+  when: zabbix_is_server
 
 - name: Import snmptrapd install tasks.
   ansible.builtin.import_tasks:
     file: snmptrapd.yml
+  when: zabbix_is_server
+
+- name: Import zabbix-agent install tasks.
+  ansible.builtin.import_tasks:
+    file: zabbix_agent.yml
+  when: not zabbix_is_server

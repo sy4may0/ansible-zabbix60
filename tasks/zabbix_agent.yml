@@ -1,0 +1,35 @@
+---
+# tasks file for zabbix60
+- name: Install zabbix official repository.
+  ansible.builtin.dnf:
+    name: "{{ zabbix_repos_rpm_url }}"
+    state: present
+    disable_gpg_check: yes
+
+- name: Install the latest version of zabbix services.
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - zabbix-agent
+    - zabbix-sender
+
+- name: Enable zabbix-agent and make sure there are running.
+  ansible.builtin.systemd:
+    name: zabbix-agent
+    state: started
+    enabled: yes
+
+- name: Configure zabbix-agent settings.
+  ansible.builtin.lineinfile:
+    path: /etc/zabbix/zabbix_agentd.conf
+    regexp: '{{ item.regexp }}'
+    line: "{{ item.line }}"
+  loop:
+    - regexp: '^Server='
+      line: "Server={{ zabbix_server_address }}"
+    - regexp: '^ServerActive='
+      line: "ServerActive={{ zabbix_server_address }}"
+    - regexp: '^Hostname='
+      line: "Hostname={{ zabbix_hostname }}"
+  notify: Restart service zabbix-agent.
