@@ -59,9 +59,10 @@ zabbix_web_server_name: 'ange'
 # zabbix is server.
 zabbix_is_server: false
 
-# zabbix config
+# zabbix agent config
 zabbix_server_address: 192.168.0.1
-zabbix_hostname: example
+zabbix_agent_hostname: example
+zabbix_agent_allow_root: 0
 
 # snmp settings.
 zabbix_snmp_community: public

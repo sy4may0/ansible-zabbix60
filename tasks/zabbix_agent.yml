@@ -31,5 +31,7 @@
     - regexp: '^ServerActive='
       line: "ServerActive={{ zabbix_server_address }}"
     - regexp: '^Hostname='
-      line: "Hostname={{ zabbix_hostname }}"
+      line: "Hostname={{ zabbix_agent_hostname }}"
+    - regexp: '^AllowRoot='
+      line: "AllowRoot={{ zabbix_agent_allow_root }}"
   notify: Restart service zabbix-agent.
