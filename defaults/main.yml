@@ -1,6 +1,9 @@
 ---
 # defaults file for zabbix60
 
+# general settings
+zabbix_annotation_author: sy4may0
+
 # dnf repository settings.
 zabbix_mariadb_repos_baseurl: https://ftp.yz.yamagata-u.ac.jp/pub/dbms/mariadb/yum/10.8/rhel8-amd64
 zabbix_mariadb_repos_gpgkey: https://ftp.yz.yamagata-u.ac.jp/pub/dbms/mariadb/yum/RPM-GPG-KEY-MariaDB
